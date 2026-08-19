@@ -55,6 +55,14 @@ General guidelines
      damping_hysteretic
 
   It should be said, that the it is up to the user to determine what is the more broader term.
+  This guideline is a **heuristic for coining new names, not a rule that overrides the
+  canonical table below**. Where the table has an entry for a quantity, that entry is
+  normative, and a name that conforms to it is never a word-order violation: ``natural_freq``
+  and ``frf_form`` both place the broader term second and are canonical nonetheless. The
+  heuristic applies only when a new compound name is coined for a quantity the table does
+  not cover, and it yields to an established term of art — ``mass_matrix``, not
+  ``matrix_mass``. A name settled that way is then added to the table, so the decision is
+  recorded rather than re-litigated.
 
 Common variables in structural dynamics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -88,6 +96,22 @@ freq_sampling), the conventions given below should be used.
 +-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Density                     | ``density``                    | kg/m^3 |                                                                                                                                                                                                                                             |
 +-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Mode shape                  | ``mode_shape``                 |        | Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments; ``phi`` elsewhere is not canonical. |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Damping ratio               | ``damping_ratio``              |        | Viscous damping ratio. Follows the ``damping_*`` word order of the general guidelines.                                                                                                                                                      |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Number of modes             | ``n_modes``                    |        | Count of modes. Instance of the ``n_<plural>`` count convention (see below).                                                                                                                                                                |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Mass matrix                 | ``mass_matrix``                | kg     | Global mass matrix. Replaces the single-letter ``M`` in public signatures; local variables inside a numerical routine are unaffected.                                                                                                       |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Stiffness matrix            | ``stiffness_matrix``           | N/m    | Global stiffness matrix. Replaces ``K`` and the abbreviation ``EI`` in public signatures.                                                                                                                                                   |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Damping matrix              | ``damping_matrix``             | Ns/m   | Global viscous damping matrix. Replaces ``C`` in public signatures.                                                                                                                                                                         |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Node coordinates            | ``nodes``                      |        | Node coordinate array of a finite-element mesh.                                                                                                                                                                                             |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Element connectivity        | ``elements``                   |        | Element connectivity array of a finite-element mesh.                                                                                                                                                                                        |
++-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Naming of public objects
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -103,7 +127,16 @@ first-level packages the following conventions apply (PEP 8, made explicit):
 * **Functions, methods and parameters**: ``snake_case``; acronyms are written
   in lowercase inside ``snake_case`` names (``add_frf``, ``frf_form``).
   Exception: established criterion functions may be the bare uppercase
-  acronym (``MAC``, ``MSF``, ``MCF``).
+  acronym (``MAC``, ``MSF``, ``MCF``), and those three functions also keep the
+  modal-literature symbols ``phi_X`` (experimental mode shape), ``phi_A``
+  (analytical mode shape) and ``phi`` as their arguments. This exception covers
+  those three names only: ``phi`` as a parameter of any other public function is a
+  violation of the canonical ``mode_shape``.
+* **Counts**: a public name denoting a number of items is spelled ``n_<plural>``
+  (``n_modes``, ``n_nodes``, ``n_elements``, ``n_frames``). A bare ``n`` is not a
+  count in a public signature.
+* **Indices**: a public name denoting an index into a collection is spelled
+  ``<name>_idx`` (``node_idx``, ``elem_idx``). The ``_ind`` suffix is not used.
 * **Constants**: ``ALL_CAPS``.
 * **Framework exemption**: names mandated by an external framework keep that
   framework's casing (e.g. the Qt ``closeEvent`` override).

@@ -63,6 +63,13 @@ Spec: `openspec/specs/public-api/spec.md` (SEP 2) · Checker: `tools/check_publi
 | Curated surface matches the SEP 2 table | `pytest::test_curated_surface_matches_spec` |
 | Umbrella `__all__` = the six names (+ `sep005` alias) **(umbrella-local)** | `pytest::test_umbrella_all_is_the_six_subpackages_plus_sep005` |
 | Renamed names keep deprecated aliases through v1.x | `pytest::test_shim_drift_check_is_advisory` (advisory) |
+| Canonical table wins over the word-order heuristic | `manual` (SEP 2 prose) — checker planned, see `enforce-sep2-nomenclature` |
+| Canonical names for modal quantities (`mode_shape`, `damping_ratio`, `n_modes`) | sibling repos' suites; checker planned |
+| Canonical names for system matrices (`mass_matrix`, `stiffness_matrix`, `damping_matrix`) | sibling repos' suites; checker planned |
+| Canonical names for mesh geometry (`nodes`, `elements`) | sibling repos' suites; checker planned |
+| Counts are `n_<plural>`, indices are `<name>_idx` | sibling repos' suites; checker planned |
+| SEP 2 declares the extended table + precedence rule | `manual` (docs) — verified by review of `docs/seps/sep-0002.rst` |
+| Evidenced divergences carry deprecated aliases (Bucket C) | sibling repos' suites — see [§ Pending](#c-align-sibling-nomenclature-with-sep-2-org-wide) |
 
 ### sep005-standard
 Spec: `openspec/specs/sep005-standard/spec.md` (SEP 5) · Scope: **umbrella-local**
@@ -177,3 +184,25 @@ they stay team-gated.
 - [ ] Flip `docs/seps/sep-0003.rst` (SEP 3, namespace) `Draft` → `Accepted` + `:Resolution:`.
 - [ ] Flip `docs/seps/sep-0005.rst` (SEP 5, sep005) `Draft` → `Accepted` + `:Resolution:`.
 - [ ] Rebuild the SEP index (`python tools/build_index.py` in `docs/seps/`).
+
+### C. Align sibling nomenclature with SEP 2 (org-wide)
+Acceptance: every name below is available under its canonical spelling, the
+divergent name still works and emits `DeprecationWarning`, and positional
+callers are unaffected. Established by the `extend-sep2-nomenclature` change;
+the contract is `openspec/specs/public-api/spec.md`, not this list.
+
+- [ ] `sdypy-EMA`: `nat_freq` → `natural_freq` (public attribute of `Model` — needs a
+      class-level `__getattr__` shim, not a plain assignment); `xi` → `damping_ratio`;
+      `phi` → `mode_shape` (excluding `MAC`/`MSF`/`MCF`, whose `phi_X`/`phi_A`/`phi`
+      arguments are a recorded SEP 2 exception); `lower`/`upper`/`f_lower`/`f_upper` →
+      `freq_lower`/`freq_upper`; `FRF_ind`/`lower_ind`/`upper_ind` → the `_idx` spellings.
+- [ ] `sdypy-model`: `nat_freq` → `natural_freq` (`Beam`, `Tetrahedron`); `K`/`M`/`EI` →
+      `stiffness_matrix`/`mass_matrix`; `org`/`conec` → `nodes`/`elements` (`Beam`);
+      `frequency` → `freq`; `n` → `n_modes` (`Beam.solve`).
+- [ ] `sdypy-view`: nothing to do — already conformant (`nodes`, `elements`, `mode_shape`,
+      `n_frames`). No release needed for this bucket.
+- [ ] Core repo follow-up, after EMA and model ship the rename: move
+      `tests/test_interop.py` (six reads of `model.nat_freq` / `ema.nat_freq`) to
+      `natural_freq`. Not a blocker — the deprecated alias keeps the suite green meanwhile.
+- [ ] Every rename keeps its alias through all of v1.x; removal is gated at v2.0 by the
+      SEP 2 deprecation policy.
