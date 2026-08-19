@@ -6,6 +6,7 @@ The contract for the SDyPy testing and CI baseline: a registered `pypi_artifacts
 **Scope:** Mixed — umbrella-local for the core test suite, marker, and workflow shape; **org-wide** for the *Every first-level package has a real functional test baseline* and *All seven fork CIs are green* requirements, which bind the six siblings.
 
 ## Requirements
+
 ### Requirement: pypi_artifacts marker registered and applied to all PyPI-dependent tests
 The core `pyproject.toml` SHALL register a pytest marker named `pypi_artifacts` under `[tool.pytest.ini_options]`, and `testpaths` SHALL be set to `["tests"]`. Every core test that fetches published artifacts from PyPI over HTTP (`test_published_sdist_has_no_stale_packaging`, `test_published_wheel_ships_only_own_portion`) or that asserts conformance of installed distributions that come from PyPI in CI (`test_sibling_ships_no_namespace_init` in `test_namespace_conformance.py`; the per-sibling `__all__` tests in `test_public_api.py`: `test_subpackage_declares_nonempty_all`, `test_every_all_entry_resolves`, `test_no_banned_leak_names_in_all`, `test_module_entries_only_where_sanctioned`, `test_curated_surface_matches_spec`) MUST be decorated with `@pytest.mark.pypi_artifacts`. Umbrella-level tests (`test_umbrella_all_is_exactly_the_six_names`, the star-import test, and the drift advisory test) MUST remain unmarked.
 
@@ -136,3 +137,20 @@ After the test-suite commits are pushed to all sibling forks and the core workfl
 - **THEN** the latest workflow run on each of the seven ladisk fork repositories shows a success conclusion
 - **AND** the four previously-silent forks (sdypy-EMA, sdypy-io, sdypy-FRF, sdypy-excitation) show their first-ever successful run
 
+### Requirement: Every umbrella-runnable checker executes in core CI
+Every `tools/check_*.py` conformance checker that is capable of running against the umbrella repository root SHALL be executed as a step in the core GitHub Actions workflows. Checkers that require a single-portion sibling clone and therefore cannot run at the umbrella root SHALL NOT be claimed as CI-covered; the documentation that lists them MUST record where they do run and show an invocation that succeeds.
+
+At the time of this requirement, `tools/check_seps.py` and `tools/check_docs.py` run at the umbrella root and SHALL both execute in `docs.yml`; `tools/check_public_api.py` and `tools/check_sibling_template.py` require a sibling clone, because they resolve exactly one portion directory under `sdypy/` and the umbrella provides none.
+
+#### Scenario: The documentation checker runs in CI
+- **WHEN** the `docs.yml` workflow runs
+- **THEN** it executes `python tools/check_docs.py --path .` and fails the job if the checker exits non-zero
+
+#### Scenario: A sibling-clone checker is not claimed as CI-covered
+- **WHEN** `REQUIREMENTS.md` § Canonical sources is inspected
+- **THEN** it does not state that `check_public_api.py` or `check_sibling_template.py` runs in this repository's CI
+- **AND** it records that they audit a sibling clone
+
+#### Scenario: Documented invocations succeed as written
+- **WHEN** a reader runs any checker invocation shown in `AGENTS.md` § Common commands, in the directory that entry specifies
+- **THEN** the command runs to a verdict — it does not fail with "expected exactly one portion under .../sdypy"

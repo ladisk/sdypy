@@ -14,7 +14,9 @@ the spec (via an OpenSpec change) — then update the corresponding row here.
 **Legend — "Verified by"**
 - `pytest::<name>` — a test in `tests/` (run `pytest -m "not pypi_artifacts"` in
   CI; `pytest` locally to include the PyPI-artifact gate).
-- `tools/check_*.py` — a repo-layer conformance checker (also run in CI).
+- `tools/check_*.py` — a repo-layer conformance checker. Those that can run at
+  the umbrella root (`check_seps.py`, `check_docs.py`) run in `docs.yml`; the
+  others audit a **sibling clone** and cannot run here — see § Canonical sources.
 - `manual` — a human/governance act with no automated gate (tracked in
   [§ Pending requirements](#pending-requirements)).
 
@@ -24,13 +26,19 @@ the spec (via an OpenSpec change) — then update the corresponding row here.
 
 | Source | What it governs |
 |---|---|
-| `openspec/specs/*/spec.md` | Normative requirements (7 capabilities, below) |
+| `openspec/specs/*/spec.md` | Normative requirements (8 capabilities, below) |
 | `docs/seps/sep-000*.rst` | SEP governance (SEP 1 levels, 2 API, 3 namespace, 5 sep005) |
-| `tools/check_public_api.py` | Executable `public-api` conformance |
-| `tools/check_docs.py` | Executable `documentation` conformance |
-| `tools/check_sibling_template.py` | Executable `sibling-package-template` conformance |
-| `tools/check_seps.py` | Executable `sep-governance` (SEP metadata) conformance |
+| `tools/check_seps.py` | Executable `sep-governance` (SEP metadata) conformance — **runs in `docs.yml`** |
+| `tools/check_docs.py` | Executable `documentation` conformance — **runs in `docs.yml`** |
+| `tools/check_public_api.py` | Executable `public-api` (`__all__`) conformance — **audits a sibling clone**, `--path ../sdypy-EMA` |
+| `tools/check_nomenclature.py` | Executable SEP 2 nomenclature conformance — **audits a sibling clone**; its own logic is covered by `tests/test_nomenclature.py` in CI |
+| `tools/check_sibling_template.py` | Executable `sibling-package-template` conformance — **audits a sibling clone** |
 | `tests/` | Functional + interop + conformance test suite |
+
+The three clone-auditing checkers cannot run against this repository: each
+resolves exactly one portion under `sdypy/`, and the umbrella provides none (it
+ships the facade plus the `sdypy/core` and `sdypy/testing` stubs). They are run
+by hand against a sibling checkout, or by that sibling's own CI.
 
 ---
 
@@ -70,6 +78,9 @@ Spec: `openspec/specs/public-api/spec.md` (SEP 2) · Checker: `tools/check_publi
 | Counts are `n_<plural>`, indices are `<name>_idx` | sibling repos' suites; checker planned |
 | SEP 2 declares the extended table + precedence rule | `manual` (docs) — verified by review of `docs/seps/sep-0002.rst` |
 | Evidenced divergences carry deprecated aliases (Bucket C) | sibling repos' suites — see [§ Pending](#c-align-sibling-nomenclature-with-sep-2-org-wide) |
+| Nomenclature conformance is mechanically enforced | `tools/check_nomenclature.py`; `pytest::test_conforming_clone_passes` and the rule tests in `tests/test_nomenclature.py` |
+| The checker declares its coverage boundary | review of the `check_nomenclature.py` docstring; `pytest::test_every_canonical_name_appears_in_sep2` |
+| Sibling nomenclature conformance is a pre-release gate | `pytest::test_installed_package_uses_canonical_names` (`pypi_artifacts`) |
 
 ### sep005-standard
 Spec: `openspec/specs/sep005-standard/spec.md` (SEP 5) · Scope: **umbrella-local**
@@ -137,6 +148,7 @@ Spec: `openspec/specs/testing-ci/spec.md` · Scope: **mixed** (see rows)
 | Core test + release workflows have the required shape | review of `python-package.yml`, `release-and-publish-to-pypi.yml` |
 | Every first-level package has a functional test baseline **(org-wide)** | sibling repos' suites |
 | Core interop suite exercises cross-package composition | `pytest tests/test_interop.py` (EMA/FRF/io/excitation/model chains, ±2–5 % tolerances) |
+| Every umbrella-runnable checker executes in core CI | `check_seps.py` + `check_docs.py` steps in `.github/workflows/docs.yml`; review of § Canonical sources |
 | All seven fork CIs green after pushes **(org-wide)** | `manual` — see Pending |
 
 ---

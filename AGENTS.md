@@ -28,7 +28,7 @@ the facade, packaging, docs, tests, and governance. See
 | `openspec/specs/` | Canonical capability specs (7) — the normative contracts |
 | `openspec/changes/` | In-flight OpenSpec changes; `archive/` holds completed ones |
 | `docs/seps/` | SEP governance docs (SEP 1 levels, 2 API, 3 namespace, 5 sep005) |
-| `tools/check_*.py` | Executable conformance checkers (public-api, docs, template) |
+| `tools/check_*.py` | Executable conformance checkers (docs, seps, public-api, nomenclature, template) |
 | `tests/` | Functional, interop, and conformance test suites |
 | `.github/workflows/` | CI: `python-package.yml`, `docs.yml`, `release-and-publish-to-pypi.yml` |
 
@@ -44,10 +44,20 @@ the facade, packaging, docs, tests, and governance. See
 uv pip install -e ".[dev]"            # dev install (docs + test + build tools)
 pytest -m "not pypi_artifacts"        # the CI test set (skips the PyPI gate)
 pytest                                # full local run incl. pypi_artifacts gate
-python tools/check_public_api.py --path .   # public-api conformance
-python tools/check_docs.py --path .         # documentation conformance
+python tools/check_docs.py --path .         # documentation conformance (umbrella)
+python tools/check_seps.py --path .         # SEP metadata conformance (umbrella)
 python -m build                       # build sdist + wheel
 sphinx-build -b html docs/source docs/_build/html   # build docs
+```
+
+Three checkers audit a **sibling clone**, not this repo — each resolves exactly
+one portion under `sdypy/`, and the umbrella provides none. Run them with a
+sibling path:
+
+```console
+python tools/check_public_api.py --path ../sdypy-EMA        # curated __all__
+python tools/check_nomenclature.py --path ../sdypy-EMA      # SEP 2 canonical names
+python tools/check_sibling_template.py --path ../sdypy-EMA  # packaging template
 ```
 
 `pypi_artifacts`-marked tests assert against *published* PyPI wheels; they are
