@@ -208,9 +208,13 @@ the contract is `openspec/specs/public-api/spec.md`, not this list.
       `phi` → `mode_shape` (excluding `MAC`/`MSF`/`MCF`, whose `phi_X`/`phi_A`/`phi`
       arguments are a recorded SEP 2 exception); `lower`/`upper`/`f_lower`/`f_upper` →
       `freq_lower`/`freq_upper`; `FRF_ind`/`lower_ind`/`upper_ind` → the `_idx` spellings.
-- [ ] `sdypy-model`: `nat_freq` → `natural_freq` (`Beam`, `Tetrahedron`); `K`/`M`/`EI` →
+- [ ] `sdypy-model`: `nat_freq` → `natural_freq` (`Beam`, `Tetrahedron`); `K`/`M` →
       `stiffness_matrix`/`mass_matrix`; `org`/`conec` → `nodes`/`elements` (`Beam`);
-      `frequency` → `freq`; `n` → `n_modes` (`Beam.solve`).
+      `frequency` → `freq`; `n` → `n_modes` (`Beam.solve`); `rho`/`nu`/`Young` →
+      `density`/`poisson_ratio`/`young_modulus` (carried over from the previous round).
+      `EI` (`matrices_k_e`, `Beam`) needs a descriptive snake_case name of the
+      maintainer's choosing — it is a scalar bending rigidity (E·I), **not** a
+      stiffness matrix, and SEP 2 has no canonical entry for it.
 - [ ] `sdypy-view`: nothing to do — already conformant (`nodes`, `elements`, `mode_shape`,
       `n_frames`). No release needed for this bucket.
 - [ ] Core repo follow-up, after EMA and model ship the rename: move
