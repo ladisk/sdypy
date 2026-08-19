@@ -29,6 +29,7 @@ the spec (via an OpenSpec change) — then update the corresponding row here.
 | `tools/check_public_api.py` | Executable `public-api` conformance |
 | `tools/check_docs.py` | Executable `documentation` conformance |
 | `tools/check_sibling_template.py` | Executable `sibling-package-template` conformance |
+| `tools/check_seps.py` | Executable `sep-governance` (SEP metadata) conformance |
 | `tests/` | Functional + interop + conformance test suite |
 
 ---
@@ -98,6 +99,17 @@ Spec: `openspec/specs/documentation/spec.md` · Checker: `tools/check_docs.py` �
 | Unified SEP rendering via `build_index.py` | `python tools/build_index.py` (in `docs.yml`) |
 | Standardised `readthedocs.yaml`; docs conformance CI job | `check_docs.py` in CI |
 
+### sep-governance
+Spec: `openspec/specs/sep-governance/spec.md` (SEP 0) · Checker: `tools/check_seps.py` · Scope: **umbrella-local**
+
+| Requirement | Verified by |
+|---|---|
+| Every SEP declares `:Authors:`, `:Status:`, `:Type:`, `:Created:` (and `:Resolution:` once ratified) | `pytest::test_missing_field_is_reported`, `test_deprecated_author_spelling_is_reported`, `test_accepted_without_resolution_is_reported`, `test_multi_line_authors_is_read_in_full`; `check_seps.py` |
+| `:Status:` is one of the nine values `index.rst.tmpl` renders (case-sensitive) | `pytest::test_unknown_status_is_reported`, `test_miscased_status_is_reported`, `test_template_declares_vocabularies`; `check_seps.py` |
+| `:Type:` is one of SEP 0's three kinds (`Standards Track`, `Informational`, `Process`) | `pytest::test_out_of_vocabulary_type_is_reported`, `test_template_declares_vocabularies`; `check_seps.py` |
+| `:Created:` is an ISO 8601 `yyyy-mm-dd` date | `pytest::test_non_iso_date_is_reported`, `test_other_non_iso_dates_are_reported`; `check_seps.py` |
+| SEP metadata conformance is mechanically enforced, ahead of the index generator | `pytest::test_all_seps_conform`; `check_seps.py` in `.github/workflows/docs.yml` |
+
 ### sibling-package-template
 Spec: `openspec/specs/sibling-package-template/spec.md` · Checker: `tools/check_sibling_template.py` · Scope: **org-wide**
 
@@ -149,6 +161,12 @@ Acceptance: the `pypi_artifacts`-marked tests flip from red to green from a fres
 ### B. Ratify SEP status (governance)
 Acceptance: SEP 2/3/5 show `:Status: Accepted` with a `:Resolution:` line, after
 recorded team sign-off.
+
+These flips are now gated by `tools/check_seps.py` (see § sep-governance): a
+`Draft → Accepted` flip that omits `:Resolution:` fails CI, and the checker runs
+before the index generator so the error is a named violation rather than a
+traceback. The gate makes the flips safe to perform; it does not perform them —
+they stay team-gated.
 
 - [ ] Team sign-off on the curated `__all__` lists and the project-lead
       decisions of 2026-06-12 (view helpers public; FEM material parameters

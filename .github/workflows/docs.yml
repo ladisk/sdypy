@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: pip install ".[docs]"
 
+      - name: Check SEP metadata
+        run: python tools/check_seps.py --path .
+
       - name: Generate SEP index
         run: python tools/build_index.py
         working-directory: docs/seps
