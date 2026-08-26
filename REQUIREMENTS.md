@@ -77,9 +77,14 @@ Spec: `openspec/specs/public-api/spec.md` (SEP 2) · Checker: `tools/check_publi
 | Canonical names for mesh geometry (`nodes`, `elements`) | sibling repos' suites; checker planned |
 | Counts are `n_<plural>`, indices are `<name>_idx` | sibling repos' suites; checker planned |
 | SEP 2 declares the extended table + precedence rule | `manual` (docs) — verified by review of `docs/seps/sep-0002.rst` |
+| SEP 2 declares the divergent spellings each canonical name replaces ("Instead of" column) | `pytest::test_sep2_instead_of_column_parses`; the two-way mirror tests below |
+| Canonical names for element natural coordinates (`xi`, `eta`, `zeta`) | `pytest::test_bare_xi_is_not_enforced_as_a_damping_spelling`, `test_element_coordinates_are_not_reported` |
+| `EI` is not a divergent spelling of `stiffness_matrix` | `pytest::test_ei_is_reported_without_a_canonical_name` |
+| The checker mirrors SEP 2 in **both** directions | `pytest::test_every_enforced_spelling_appears_in_sep2`, `test_every_sep2_spelling_is_enforced` |
 | Evidenced divergences carry deprecated aliases (Bucket C) | sibling repos' suites — see [§ Pending](#c-align-sibling-nomenclature-with-sep-2-org-wide) |
 | Nomenclature conformance is mechanically enforced | `tools/check_nomenclature.py`; `pytest::test_conforming_clone_passes` and the rule tests in `tests/test_nomenclature.py` |
 | The checker declares its coverage boundary | review of the `check_nomenclature.py` docstring; `pytest::test_every_canonical_name_appears_in_sep2` |
+| A bare `xi` is not statically decidable (damping vs element coordinate) | `manual` — declared in the `check_nomenclature.py` docstring; sibling suites own it |
 | Sibling nomenclature conformance is a pre-release gate | `pytest::test_installed_package_uses_canonical_names` (`pypi_artifacts`) |
 
 ### sep005-standard
@@ -115,6 +120,7 @@ Spec: `openspec/specs/documentation/spec.md` · Checker: `tools/check_docs.py` �
 | README standardised as reStructuredText | `check_docs.py` |
 | Umbrella landing page + unified toctree; autodoc for own-code | docs build (`docs.yml`) |
 | Unified SEP rendering via `build_index.py` | `python tools/build_index.py` (in `docs.yml`) |
+| Canonical variable table surfaced in the narrative docs by transclusion (single definition) | `manual` — `docs/source/dev/nomenclature.rst` includes the marker-delimited region of `sep-0002.rst`; verified by docs build |
 | Standardised `readthedocs.yaml`; docs conformance CI job | `check_docs.py` in CI |
 
 ### sep-governance
@@ -203,20 +209,57 @@ divergent name still works and emits `DeprecationWarning`, and positional
 callers are unaffected. Established by the `extend-sep2-nomenclature` change;
 the contract is `openspec/specs/public-api/spec.md`, not this list.
 
-- [ ] `sdypy-EMA`: `nat_freq` → `natural_freq` (public attribute of `Model` — needs a
-      class-level `__getattr__` shim, not a plain assignment); `xi` → `damping_ratio`;
-      `phi` → `mode_shape` (excluding `MAC`/`MSF`/`MCF`, whose `phi_X`/`phi_A`/`phi`
-      arguments are a recorded SEP 2 exception); `lower`/`upper`/`f_lower`/`f_upper` →
-      `freq_lower`/`freq_upper`; `FRF_ind`/`lower_ind`/`upper_ind` → the `_idx` spellings.
-- [ ] `sdypy-model`: `nat_freq` → `natural_freq` (`Beam`, `Tetrahedron`); `K`/`M` →
-      `stiffness_matrix`/`mass_matrix`; `org`/`conec` → `nodes`/`elements` (`Beam`);
-      `frequency` → `freq`; `n` → `n_modes` (`Beam.solve`); `rho`/`nu`/`Young` →
-      `density`/`poisson_ratio`/`young_modulus` (carried over from the previous round).
-      `EI` (`matrices_k_e`, `Beam`) needs a descriptive snake_case name of the
-      maintainer's choosing — it is a scalar bending rigidity (E·I), **not** a
-      stiffness matrix, and SEP 2 has no canonical entry for it.
+This inventory is **derived from `tools/check_nomenclature.py` output**, not
+asserted independently of it — per the `public-api` spec, a name the checker no
+longer reports is dropped from the list. Baseline at the
+`canonicalize-sep2-migration-map` change, audited against the **installed**
+(published) packages: EMA 0.29.1 → 28 findings, model 0.1.5 → 84, view 0.
+
+**Audit the installed package, not a local clone.** The local `../sdypy-model`
+checkout is at 0.1.2 and its `acoustic_external` sources are untracked and
+absent, so auditing it reports 68 findings and silently misses 16 — including
+every `frequency` site. `../sdypy-EMA` is faithful (identical output either
+way), but the model discrepancy is why the counts above are taken from the
+installed distributions.
+
+**Coverage caveat:** `sdypy-io`, `sdypy-FRF` and `sdypy-excitation` are
+**unaudited** — no local clone, and they are not covered by the counts above.
+This inventory is therefore known-incomplete.
+
+- [ ] `sdypy-EMA` (28 findings): `nat_freq` → `natural_freq` (public attribute of `Model` —
+      needs a class-level `__getattr__` shim, not a plain assignment); `nat_xi` and
+      `pole_xi` → `damping_ratio` (`Model.select_closest_poles`, `Model.get_poles`);
+      `phi` → `mode_shape` (`Model.get_constants`; excluding `MAC`/`MSF`/`MCF`, whose
+      `phi_X`/`phi_A`/`phi` arguments are a recorded SEP 2 exception);
+      `lower`/`upper`/`f_lower`/`f_upper` → `freq_lower`/`freq_upper` (`Model.__init__`,
+      `Model.get_constants`); `frf_type` → `frf_form` (`Model.__init__`,
+      `Model.read_uff`, `LSFD`, `LSFD_old`, `LSFD_proportional`);
+      `FRF_ind`/`lower_ind`/`upper_ind`/`pole_ind` → the `_idx` spellings.
+- [ ] `sdypy-model` (84 findings): `nat_freq` → `natural_freq` (`Beam.solve`,
+      `Tetrahedron.solve`); `K`/`M` → `stiffness_matrix`/`mass_matrix` (`Beam.assemble`,
+      `Shell.construct_global_matrices`, `solve_eigenvalue`, `lump_mass_matrix`);
+      `org`/`conec` → `nodes`/`elements` (`Beam`, `Tetrahedron`, `construct_loce`);
+      `n` → `n_modes` (`Beam.solve`); `E`/`Young` → `young_modulus`, `nu`/`Poisson` →
+      `poisson_ratio`, `rho`/`ro`/`Density` → `density` (`Shell`, `Tetrahedron`,
+      `MITC4_element`, `MITC4_global`, `H_matrix`, `get_constitutive_tensor`,
+      `matrices_k_e_timoshenko`); `derivative_E_ind`/`derivative_ro_ind`/`eig_ind` →
+      the `_idx` spellings (`Tetrahedron.matrix_derivative`, `Tetrahedron.S_matrix`).
+      The bare uppercase parameters `I`, `A`, `J` and `EI` each need a descriptive
+      snake_case name of the maintainer's choosing: SEP 2 has no canonical entry for
+      them, so the checker reports the snake_case violation without proposing a
+      replacement. In particular `EI` (`matrices_k_e`, `Beam`) is a scalar bending
+      rigidity (E·I), **not** a stiffness matrix — SEP 2's `stiffness_matrix` row
+      explicitly disclaims it.
+- [ ] `sdypy-model`, `acoustic_external` and `mesh` (16 further findings, present in the
+      published 0.1.5 but absent from the local 0.1.2 checkout): `frequency` → `freq`
+      (`AcousticExternalProblem.__init__`, `Body.__init__`, and three more sites);
+      `phi` → `mode_shape`; `rho` → `density`; `n` → `n_<plural>`; and the bare
+      uppercase parameters `N`, `R`, `G`, which need maintainer-chosen descriptive
+      names as `I`/`A`/`J` above do.
 - [ ] `sdypy-view`: nothing to do — already conformant (`nodes`, `elements`, `mode_shape`,
       `n_frames`). No release needed for this bucket.
+- [ ] `sdypy-io`, `sdypy-FRF`, `sdypy-excitation`: clone and audit, then extend this
+      inventory with whatever the checker reports. Not yet started.
 - [ ] Core repo follow-up, after EMA and model ship the rename: move
       `tests/test_interop.py` (six reads of `model.nat_freq` / `ema.nat_freq`) to
       `natural_freq`. Not a blocker — the deprecated alias keeps the suite green meanwhile.
