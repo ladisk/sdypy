@@ -11,27 +11,27 @@ SEP 2 — Nomenclature guidelines
 Abstract
 --------
 
-The nomenclature guidelines for SDyPy are presented for better interoperability
-of the packages/modules.
+This SEP gives the nomenclature guidelines for SDyPy. Consistent names let the
+packages and modules work together.
 
 Motivation
 ----------
 
-The nomenclature is often not consistent for different packages which affects the
-user experience when combining the use of multiple packages.
+Different packages often use different names for the same quantity. This makes
+the packages difficult to use together.
 
 Detailed description
 --------------------
 
-SDyPy nomenclature follows the python guidelines, presented in 
+SDyPy nomenclature follows the Python guidelines, given in 
 `PEP 8 <https://www.python.org/dev/peps/pep-0008/>`_.
 
 General guidelines
 ^^^^^^^^^^^^^^^^^^
 
-* As is stated in `PEP 8 <https://www.python.org/dev/peps/pep-0008/>`_, the code is read 
-  much more often than it is written. The names of the variables should therefore
-  be as descriptive as possible.
+* `PEP 8 <https://www.python.org/dev/peps/pep-0008/>`_ states that code is read
+  much more often than it is written. The names of the variables are therefore
+  as descriptive as possible.
   Examples:
 
   .. code:: python
@@ -40,12 +40,12 @@ General guidelines
 
      rectangle_height = 4 # Good
 
-  With most code editors enabling the use of autocomplete, the length of the variables does not present
-  a major issue for code writing.
+  Most code editors have autocomplete. Long variable names therefore do not make
+  the code difficult to write.
 
-* When combining multiple words into a variable name, the term with a broader meaning should
-  be on the first place. The more defining term comes next. This improves the readability of the code,
-  enabling the reader to immediately understand what the main purpose of the variable is.  Examples:
+* If a variable name contains more than one word, the term with a broader meaning
+  comes first. The more specific term comes next. This makes the code easier
+  to read, because the reader immediately sees the purpose of the variable. Examples:
 
   .. code:: python
 
@@ -54,32 +54,34 @@ General guidelines
      damping_viscous
      damping_hysteretic
 
-  It should be said, that the it is up to the user to determine what is the more broader term.
-  This guideline is a **heuristic for coining new names, not a rule that overrides the
-  canonical table below**. Where the table has an entry for a quantity, that entry is
-  normative, and a name that conforms to it is never a word-order violation: ``natural_freq``
-  and ``frf_form`` both place the broader term second and are canonical nonetheless. The
-  heuristic applies only when a new compound name is coined for a quantity the table does
-  not cover, and it yields to an established term of art — ``mass_matrix``, not
-  ``matrix_mass``. A name settled that way is then added to the table, so the decision is
-  recorded rather than re-litigated.
+  The user determines which term is broader.
+  This guideline is a **heuristic for new names, not a rule that overrides the
+  canonical table below**. Where the table has an entry for a quantity, that entry
+  is normative. A name that conforms to the table is never a word-order violation.
+  For example, ``natural_freq`` and ``frf_form`` place the broader term second and
+  are canonical nonetheless. The heuristic applies only to a new compound name for
+  a quantity that the table does not cover. It yields to an established term of
+  art: ``mass_matrix``, not ``matrix_mass``. A name settled that way is then added
+  to the table, so the decision is recorded and not argued again.
 
 Common variables in structural dynamics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Despite the general guidelines written above, the variables which are broadly used in structural dynamics 
-can be an exception. To avoid different variable names (e.g. sampling_frequency, 
-freq_sampling), the conventions given below should be used.
+The variables that are widely used in structural dynamics are an exception to the
+general guidelines above. The conventions below prevent different names for the
+same quantity, for example sampling_frequency and freq_sampling. These conventions
+are normative.
 
 .. canonical-table-start
 
 The **Symbol** column gives the canonical name. The **Instead of** column gives
-the divergent spellings that name replaces, and is normative: this table is the
-single source of truth for the nomenclature migration map, and no checker,
-roster or other document may require a rename this column does not record. A
-canonical name that replaces no evidenced divergent spelling leaves the cell
-empty rather than inventing one. Adding a spelling to the column is an amendment
-to this SEP and follows the same review path as any other amendment to it.
+the divergent spellings that the canonical name replaces. This column is
+normative. The table is the single source of truth for the migration map. A
+checker, roster or other document must not require a rename that this column does
+not record. Where a canonical name replaces no evidenced divergent spelling, the cell
+stays empty. Do not invent a spelling to fill it. A new spelling in the column is
+an amendment to this SEP, and follows the same review path as any other
+amendment.
 
 .. list-table::
    :header-rows: 1
@@ -99,7 +101,7 @@ to this SEP and follows the same review path as any other amendment to it.
      - ``frf``
      -
      -
-     - Different forms of the frequency response function are possible (receptance, mobility, accelerance) and can be given other names. When the frequency response function is referenced in arbitrary form, this variable name should be given.
+     - Different forms of the frequency response function are possible (receptance, mobility, accelerance) and can be given other names. When the frequency response function is referenced in arbitrary form, use this variable name.
    * - Frequency vector
      - ``freq``
      - ``frequency``
@@ -119,7 +121,7 @@ to this SEP and follows the same review path as any other amendment to it.
      - ``fs``
      - ``sampling_frequency``, ``freq_sampling``
      - Hz
-     - This name is not descriptive; however, it is commonly used in other packages (e.g. `scipy <https://www.scipy.org/scipylib/index.html>`_)
+     - This name is not descriptive. It is however commonly used in other packages, for example `scipy <https://www.scipy.org/scipylib/index.html>`_.
    * - Time step
      - ``dt``
      -
@@ -129,12 +131,12 @@ to this SEP and follows the same review path as any other amendment to it.
      - ``frf_form``
      - ``frf_type``
      -
-     - Form of the frequency response function: ``'receptance'``, ``'mobility'`` or ``'accelerance'``. Canonical name at the sdypy level; backend parameter names are out of scope.
+     - Form of the frequency response function: ``'receptance'``, ``'mobility'`` or ``'accelerance'``. Canonical name at the sdypy level. Backend parameter names are out of scope.
    * - Young's modulus
      - ``young_modulus``
      - ``E``, ``Young``
      - Pa
-     - Fixed compound term; the broader-term-first rule does not reorder it.
+     - Fixed compound term. The broader-term-first rule does not reorder it.
    * - Poisson's ratio
      - ``poisson_ratio``
      - ``nu``, ``Poisson``
@@ -149,7 +151,7 @@ to this SEP and follows the same review path as any other amendment to it.
      - ``mode_shape``
      - ``phi``, ``phi_X``, ``phi_A``
      -
-     - Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments; ``phi`` elsewhere is not canonical.
+     - Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments. ``phi`` elsewhere is not canonical.
    * - Damping ratio
      - ``damping_ratio``
      - ``nat_xi``, ``pole_xi``
@@ -164,7 +166,7 @@ to this SEP and follows the same review path as any other amendment to it.
      - ``mass_matrix``
      - ``M``
      - kg
-     - Global mass matrix. Replaces the single-letter ``M`` in public signatures; local variables inside a numerical routine are unaffected.
+     - Global mass matrix. Replaces the single-letter ``M`` in public signatures. Local variables inside a numerical routine are unaffected.
    * - Stiffness matrix
      - ``stiffness_matrix``
      - ``K``
@@ -194,18 +196,18 @@ to this SEP and follows the same review path as any other amendment to it.
 Two entries need a word of explanation.
 
 ``EI`` is a scalar bending rigidity, the product of Young's modulus and the
-second moment of area. It is not a stiffness matrix, so ``stiffness_matrix`` is
-the wrong name for it and this table records no canonical spelling for it. It
-remains a violation of the snake_case rule for public parameters, and the
+second moment of area. It is not a stiffness matrix. ``stiffness_matrix`` is
+therefore the wrong name for it, and this table records no canonical spelling for
+it. ``EI`` remains a violation of the snake_case rule for public parameters. The
 package that exposes it replaces it with a descriptive snake_case name of the
 maintainer's choosing.
 
 ``xi`` is canonical for an element natural coordinate and divergent for a
-damping ratio, so its reading depends on context. A name that exposes a damping
-ratio uses ``damping_ratio`` wherever it appears; a finite-element routine keeps
-``xi``, ``eta`` and ``zeta``. Only the unambiguous damping spellings
-(``nat_xi``, ``pole_xi``) are listed in the **Instead of** column, because a
-bare ``xi`` cannot be classified without reading what the routine computes.
+damping ratio. Its meaning therefore depends on the context. A name that exposes
+a damping ratio uses ``damping_ratio`` wherever it appears. A finite-element
+routine keeps ``xi``, ``eta`` and ``zeta``. Only the unambiguous damping
+spellings (``nat_xi``, ``pole_xi``) are in the **Instead of** column. A bare
+``xi`` cannot be classified without knowledge of what the routine computes.
 
 .. canonical-table-end
 
@@ -218,42 +220,41 @@ first-level packages the following conventions apply (PEP 8, made explicit):
 * **Modules and packages**: ``snake_case`` words. Established acronym
   sub-package names fixed by SEP 3 / SEP 4 (``EMA``, ``FRF``, ``OMA``) stay
   uppercase.
-* **Classes**: ``CapWords``; acronyms keep their uppercase form inside
+* **Classes**: ``CapWords``. Acronyms keep their uppercase form inside
   ``CapWords`` names (``FRF``, not ``Frf``).
-* **Functions, methods and parameters**: ``snake_case``; acronyms are written
+* **Functions, methods and parameters**: ``snake_case``. Acronyms are written
   in lowercase inside ``snake_case`` names (``add_frf``, ``frf_form``).
-  Exception: established criterion functions may be the bare uppercase
-  acronym (``MAC``, ``MSF``, ``MCF``), and those three functions also keep the
+  Exception: established criterion functions can be the bare uppercase
+  acronym (``MAC``, ``MSF``, ``MCF``). Those three functions also keep the
   modal-literature symbols ``phi_X`` (experimental mode shape), ``phi_A``
   (analytical mode shape) and ``phi`` as their arguments. This exception covers
   those three names only: ``phi`` as a parameter of any other public function is a
   violation of the canonical ``mode_shape``.
-* **Counts**: a public name denoting a number of items is spelled ``n_<plural>``
+* **Counts**: a public name that denotes a number of items is spelled ``n_<plural>``
   (``n_modes``, ``n_nodes``, ``n_elements``, ``n_frames``). A bare ``n`` is not a
   count in a public signature.
-* **Indices**: a public name denoting an index into a collection is spelled
+* **Indices**: a public name that denotes an index into a collection is spelled
   ``<name>_idx`` (``node_idx``, ``elem_idx``). The ``_ind`` suffix is not used.
 * **Constants**: ``ALL_CAPS``.
 * **Framework exemption**: names mandated by an external framework keep that
-  framework's casing (e.g. the Qt ``closeEvent`` override).
+  framework's casing (for example, the Qt ``closeEvent`` override).
 
 Public API surface
 ^^^^^^^^^^^^^^^^^^
 
 Every first-level package declares its public API with an explicit
 ``__all__`` in its ``sdypy/<name>/__init__.py``. Only the names curated in
-``__all__`` are supported API; any other module attribute is an
+``__all__`` are supported API. Any other module attribute is an
 implementation detail. Packages that wrap a backend re-export the curated
-names explicitly instead of star-importing the backend, so third-party and
+names explicitly. They do not star-import the backend, so third-party and
 standard-library names never enter the public surface.
 
 Deprecation policy
 ^^^^^^^^^^^^^^^^^^
 
 When a public name is renamed to conform to these guidelines, the old name is
-kept as an alias that emits ``DeprecationWarning`` for all of v1.x. Removal of
-a deprecated alias happens no earlier than v2.0. New code uses the canonical
-names only.
+kept as an alias. The alias emits ``DeprecationWarning`` for all of v1.x. Do not
+remove a deprecated alias before v2.0. New code uses the canonical names only.
 
 Discussion
 ----------
