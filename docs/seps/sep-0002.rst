@@ -71,47 +71,139 @@ Despite the general guidelines written above, the variables which are broadly us
 can be an exception. To avoid different variable names (e.g. sampling_frequency, 
 freq_sampling), the conventions given below should be used.
 
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Parameter                   | Symbol                         | Unit   | Description                                                                                                                                                                                                                                 |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Frequency limits            | ``freq_upper``, ``freq_lower`` |        |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Frequency Response Function | ``frf``                        |        | Different forms of the frequency response function are possible (receptance, mobility, accelerance) and can be given other names. When the frequency response function is referenced in arbitrary form, this variable name should be given. |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Frequency vector            | ``freq``                       | Hz     |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Frequency vector in rad/s   | ``freq_rad``                   | rad/s  |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Natural frequency           | ``natural_freq``               | Hz     |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Sampling frequency          | ``fs``                         | Hz     | This name is not descriptive; however, it is commonly used in other packages (e.g. `scipy <https://www.scipy.org/scipylib/index.html>`_)                                                                                                    |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Time step                   | ``dt``                         | second |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| FRF form                    | ``frf_form``                   |        | Form of the frequency response function: ``'receptance'``, ``'mobility'`` or ``'accelerance'``. Canonical name at the sdypy level; backend parameter names are out of scope.                                                                |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Young's modulus             | ``young_modulus``              | Pa     | Fixed compound term; the broader-term-first rule does not reorder it.                                                                                                                                                                       |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Poisson's ratio             | ``poisson_ratio``              |        | Fixed compound term.                                                                                                                                                                                                                        |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Density                     | ``density``                    | kg/m^3 |                                                                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Mode shape                  | ``mode_shape``                 |        | Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments; ``phi`` elsewhere is not canonical. |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Damping ratio               | ``damping_ratio``              |        | Viscous damping ratio. Follows the ``damping_*`` word order of the general guidelines.                                                                                                                                                      |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Number of modes             | ``n_modes``                    |        | Count of modes. Instance of the ``n_<plural>`` count convention (see below).                                                                                                                                                                |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Mass matrix                 | ``mass_matrix``                | kg     | Global mass matrix. Replaces the single-letter ``M`` in public signatures; local variables inside a numerical routine are unaffected.                                                                                                       |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Stiffness matrix            | ``stiffness_matrix``           | N/m    | Global stiffness matrix. Replaces ``K`` and the abbreviation ``EI`` in public signatures.                                                                                                                                                   |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Damping matrix              | ``damping_matrix``             | Ns/m   | Global viscous damping matrix. Replaces ``C`` in public signatures.                                                                                                                                                                         |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Node coordinates            | ``nodes``                      |        | Node coordinate array of a finite-element mesh.                                                                                                                                                                                             |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Element connectivity        | ``elements``                   |        | Element connectivity array of a finite-element mesh.                                                                                                                                                                                        |
-+-----------------------------+--------------------------------+--------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+The **Symbol** column gives the canonical name. The **Instead of** column gives
+the divergent spellings that name replaces, and is normative: this table is the
+single source of truth for the nomenclature migration map, and no checker,
+roster or other document may require a rename this column does not record. A
+canonical name that replaces no evidenced divergent spelling leaves the cell
+empty rather than inventing one. Adding a spelling to the column is an amendment
+to this SEP and follows the same review path as any other amendment to it.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 18 20 20 7 35
+
+   * - Parameter
+     - Symbol
+     - Instead of
+     - Unit
+     - Description
+   * - Frequency limits
+     - ``freq_upper``, ``freq_lower``
+     - ``lower``, ``upper``, ``f_lower``, ``f_upper``
+     -
+     -
+   * - Frequency Response Function
+     - ``frf``
+     -
+     -
+     - Different forms of the frequency response function are possible (receptance, mobility, accelerance) and can be given other names. When the frequency response function is referenced in arbitrary form, this variable name should be given.
+   * - Frequency vector
+     - ``freq``
+     - ``frequency``
+     - Hz
+     -
+   * - Frequency vector in rad/s
+     - ``freq_rad``
+     -
+     - rad/s
+     -
+   * - Natural frequency
+     - ``natural_freq``
+     - ``nat_freq``
+     - Hz
+     -
+   * - Sampling frequency
+     - ``fs``
+     - ``sampling_frequency``, ``freq_sampling``
+     - Hz
+     - This name is not descriptive; however, it is commonly used in other packages (e.g. `scipy <https://www.scipy.org/scipylib/index.html>`_)
+   * - Time step
+     - ``dt``
+     -
+     - second
+     -
+   * - FRF form
+     - ``frf_form``
+     - ``frf_type``
+     -
+     - Form of the frequency response function: ``'receptance'``, ``'mobility'`` or ``'accelerance'``. Canonical name at the sdypy level; backend parameter names are out of scope.
+   * - Young's modulus
+     - ``young_modulus``
+     - ``E``, ``Young``
+     - Pa
+     - Fixed compound term; the broader-term-first rule does not reorder it.
+   * - Poisson's ratio
+     - ``poisson_ratio``
+     - ``nu``, ``Poisson``
+     -
+     - Fixed compound term.
+   * - Density
+     - ``density``
+     - ``rho``, ``ro``, ``Density``
+     - kg/m^3
+     -
+   * - Mode shape
+     - ``mode_shape``
+     - ``phi``, ``phi_X``, ``phi_A``
+     -
+     - Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments; ``phi`` elsewhere is not canonical.
+   * - Damping ratio
+     - ``damping_ratio``
+     - ``nat_xi``, ``pole_xi``
+     -
+     - Viscous damping ratio. Follows the ``damping_*`` word order of the general guidelines.
+   * - Number of modes
+     - ``n_modes``
+     -
+     -
+     - Count of modes. Instance of the ``n_<plural>`` count convention (see below).
+   * - Mass matrix
+     - ``mass_matrix``
+     - ``M``
+     - kg
+     - Global mass matrix. Replaces the single-letter ``M`` in public signatures; local variables inside a numerical routine are unaffected.
+   * - Stiffness matrix
+     - ``stiffness_matrix``
+     - ``K``
+     - N/m
+     - Global stiffness matrix. Replaces ``K`` in public signatures. ``EI`` is **not** a divergent spelling of this name -- see the note below the table.
+   * - Damping matrix
+     - ``damping_matrix``
+     - ``C``
+     - Ns/m
+     - Global viscous damping matrix. Replaces ``C`` in public signatures.
+   * - Node coordinates
+     - ``nodes``
+     - ``org``
+     -
+     - Node coordinate array of a finite-element mesh.
+   * - Element connectivity
+     - ``elements``
+     - ``conec``
+     -
+     - Element connectivity array of a finite-element mesh.
+   * - Element natural coordinates
+     - ``xi``, ``eta``, ``zeta``
+     -
+     -
+     - Natural (isoparametric) coordinates of a finite element. An established term of art in finite-element analysis, and canonical as written: these are **not** divergent spellings of ``damping_ratio``.
+
+Two entries need a word of explanation.
+
+``EI`` is a scalar bending rigidity, the product of Young's modulus and the
+second moment of area. It is not a stiffness matrix, so ``stiffness_matrix`` is
+the wrong name for it and this table records no canonical spelling for it. It
+remains a violation of the snake_case rule for public parameters, and the
+package that exposes it replaces it with a descriptive snake_case name of the
+maintainer's choosing.
+
+``xi`` is canonical for an element natural coordinate and divergent for a
+damping ratio, so its reading depends on context. A name that exposes a damping
+ratio uses ``damping_ratio`` wherever it appears; a finite-element routine keeps
+``xi``, ``eta`` and ``zeta``. Only the unambiguous damping spellings
+(``nat_xi``, ``pole_xi``) are listed in the **Instead of** column, because a
+bare ``xi`` cannot be classified without reading what the routine computes.
 
 Naming of public objects
 ^^^^^^^^^^^^^^^^^^^^^^^^
