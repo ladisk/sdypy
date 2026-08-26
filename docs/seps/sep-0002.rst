@@ -71,6 +71,8 @@ Despite the general guidelines written above, the variables which are broadly us
 can be an exception. To avoid different variable names (e.g. sampling_frequency, 
 freq_sampling), the conventions given below should be used.
 
+.. canonical-table-start
+
 The **Symbol** column gives the canonical name. The **Instead of** column gives
 the divergent spellings that name replaces, and is normative: this table is the
 single source of truth for the nomenclature migration map, and no checker,
@@ -204,6 +206,8 @@ ratio uses ``damping_ratio`` wherever it appears; a finite-element routine keeps
 ``xi``, ``eta`` and ``zeta``. Only the unambiguous damping spellings
 (``nat_xi``, ``pole_xi``) are listed in the **Instead of** column, because a
 bare ``xi`` cannot be classified without reading what the routine computes.
+
+.. canonical-table-end
 
 Naming of public objects
 ^^^^^^^^^^^^^^^^^^^^^^^^
