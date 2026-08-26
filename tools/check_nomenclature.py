@@ -21,6 +21,12 @@ Coverage boundary - what this checker does NOT decide:
     art. SEP 2 makes the canonical table normative and the word-order guideline
     a heuristic that yields to established usage; deciding what is established
     is human judgement, tracked as `manual` in REQUIREMENTS.md.
+  * whether a bare ``xi`` denotes a damping ratio or an element natural
+    (isoparametric) coordinate. SEP 2 makes ``xi``/``eta``/``zeta`` canonical for
+    element coordinates and ``damping_ratio`` canonical for damping, so the
+    reading depends on what the routine computes - which static analysis cannot
+    see. Only the unambiguous damping spellings ``nat_xi`` and ``pole_xi`` are
+    enforced here; a bare ``xi`` used for damping is left to the sibling suites.
   * whether a deprecated alias emits ``DeprecationWarning`` and returns the same
     value as its canonical counterpart. That is runtime behaviour, verified by
     the sibling packages' own test suites.
@@ -42,13 +48,17 @@ import ast
 import sys
 from pathlib import Path
 
-# Divergent spelling -> canonical name. Mirrors the canonical variable table of
-# docs/seps/sep-0002.rst; that file is the source of truth, this dict is the
-# machine-readable mirror. tests/test_nomenclature.py asserts the mirror cannot
-# drift away from the SEP.
+# Divergent spelling -> canonical name. Mirrors the "Instead of" column of the
+# canonical variable table in docs/seps/sep-0002.rst; that column is the source
+# of truth, this dict is the machine-readable mirror. tests/test_nomenclature.py
+# pins the mirror in BOTH directions - no entry here that the SEP does not
+# carry, and no SEP entry that is not enforced here - so neither side can drift.
 CANONICAL = {
-    # Modal quantities
-    "xi": "damping_ratio",
+    # Modal quantities. A bare `xi` is deliberately absent: SEP 2 makes it a
+    # canonical name for an element natural coordinate, so it cannot be reported
+    # on sight. Only the unambiguous damping spellings are enforced.
+    "nat_xi": "damping_ratio",
+    "pole_xi": "damping_ratio",
     "phi": "mode_shape",
     "phi_X": "mode_shape",
     "phi_A": "mode_shape",
@@ -58,9 +68,9 @@ CANONICAL = {
     "M": "mass_matrix",
     "C": "damping_matrix",
     # `EI` is deliberately absent: it is a scalar bending rigidity (E*I), not a
-    # stiffness matrix, and SEP 2 has no entry for it. The parameter-case rule
-    # below still reports it as non-snake_case, without inventing a wrong
-    # canonical name for it.
+    # stiffness matrix, and SEP 2's stiffness_matrix row explicitly disclaims it.
+    # The parameter-case rule below still reports it as non-snake_case, without
+    # inventing a wrong canonical name for it.
     # Mesh and geometry
     "org": "nodes",
     "conec": "elements",

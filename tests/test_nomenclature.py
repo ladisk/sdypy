@@ -76,7 +76,7 @@ def test_conforming_clone_passes(tmp_path):
 
 
 def test_non_canonical_parameter_is_reported(tmp_path):
-    src = "def damp(xi):\n    return xi\n"
+    src = "def damp(nat_xi):\n    return nat_xi\n"
     violations = check_clone(write_clone(tmp_path, src))
     assert len(violations) == 1
     assert "damping_ratio" in violations[0]
@@ -181,15 +181,105 @@ def test_missing_namespace_dir_is_an_error(tmp_path):
 # Layer one: the mirror cannot drift away from SEP 2
 # --------------------------------------------------------------------------
 
-def test_every_canonical_name_appears_in_sep2():
-    """The checker must never enforce a name SEP 2 has not ratified.
+def sep2_instead_of_spellings():
+    """Return the divergent spellings in SEP 2's "Instead of" column.
 
-    The reverse direction is deliberately not asserted: a table row the checker
-    does not yet enforce is the safe kind of gap.
+    The column is the source of truth for the migration map; `CANONICAL` is its
+    mirror. Parsing the `list-table` is why the table is a `list-table`: one
+    cell per line, no grid rules to reassemble.
     """
+    lines = SEP2.read_text(encoding="utf-8").split("\n")
+    start = lines.index(".. list-table::")
+    rows, cur = [], None
+    for line in lines[start:]:
+        if line.startswith("   * - "):
+            if cur is not None:
+                rows.append(cur)
+            cur = [line[7:].strip()]
+        elif line.startswith("     - "):
+            cur.append(line[7:].strip())
+        elif line == "     -":
+            cur.append("")
+        elif cur is not None and not line.startswith(("   ", ".. list-table")):
+            break
+    if cur is not None:
+        rows.append(cur)
+
+    header, body = rows[0], rows[1:]
+    column = header.index("Instead of")
+    spellings = set()
+    for row in body:
+        cell = row[column]
+        if not cell:
+            continue
+        spellings.update(part.strip().strip("`") for part in cell.split(","))
+    return {name for name in spellings if name}
+
+
+def test_sep2_instead_of_column_parses():
+    """Guard the parser itself: a silently empty parse would pass every mirror
+    test below, so assert the column is found and populated."""
+    spellings = sep2_instead_of_spellings()
+    assert len(spellings) > 15, sorted(spellings)
+    assert "nat_freq" in spellings
+    assert "conec" in spellings
+
+
+def test_every_canonical_name_appears_in_sep2():
+    """The checker must never enforce a target name SEP 2 has not ratified."""
     text = SEP2.read_text(encoding="utf-8")
     missing = sorted({name for name in CANONICAL.values() if name not in text})
     assert not missing, "checker enforces names absent from SEP 2: %s" % missing
+
+
+def test_every_enforced_spelling_appears_in_sep2():
+    """No checker-only rename.
+
+    This is the assertion the module lacked. Pinning only the target names let
+    the checker invent the left-hand side of the map, which is how a blanket
+    `xi` -> `damping_ratio` rule got in and started reporting finite-element
+    shape-function coordinates as violations.
+    """
+    unratified = sorted(set(CANONICAL) - sep2_instead_of_spellings())
+    assert not unratified, (
+        "checker enforces renames absent from SEP 2's \"Instead of\" column: %s"
+        % unratified
+    )
+
+
+def test_every_sep2_spelling_is_enforced():
+    """No SEP entry the checker quietly ignores."""
+    unenforced = sorted(sep2_instead_of_spellings() - set(CANONICAL))
+    assert not unenforced, (
+        "SEP 2 requires renames the checker does not enforce: %s" % unenforced
+    )
+
+
+def test_bare_xi_is_not_enforced_as_a_damping_spelling():
+    """SEP 2 makes `xi` canonical for element natural coordinates.
+
+    Enforcing it as a damping spelling would tell a maintainer to rename
+    `shape_functions(xi, eta)`, which would be wrong. The damping spellings that
+    *are* unambiguous are enforced in its place.
+    """
+    assert "xi" not in CANONICAL
+    assert CANONICAL["nat_xi"] == "damping_ratio"
+    assert CANONICAL["pole_xi"] == "damping_ratio"
+
+
+def test_element_coordinates_are_not_reported(tmp_path):
+    src = "def shape_functions(xi, eta, zeta):\n    return xi, eta, zeta\n"
+    assert check_clone(write_clone(tmp_path, src, pkg="model")) == []
+
+
+def test_ei_is_reported_without_a_canonical_name(tmp_path):
+    """`EI` is a scalar bending rigidity, not a stiffness matrix."""
+    src = "def matrices_k_e(EI, length):\n    return EI * length\n"
+    violations = check_clone(write_clone(tmp_path, src, pkg="model"))
+    assert len(violations) == 1, violations
+    assert "EI" in violations[0]
+    assert "stiffness_matrix" not in violations[0]
+    assert "EI" not in CANONICAL
 
 
 def test_criterion_exception_is_documented_in_sep2():
