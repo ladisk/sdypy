@@ -213,7 +213,7 @@ This inventory is **derived from `tools/check_nomenclature.py` output**, not
 asserted independently of it — per the `public-api` spec, a name the checker no
 longer reports is dropped from the list. Baseline at the
 `canonicalize-sep2-migration-map` change, audited against the **installed**
-(published) packages: EMA 0.29.1 → 28 findings, model 0.1.5 → 84, view 0.
+(published) packages: EMA 0.29.1 → 27 findings, model 0.1.5 → 82, view 0.
 
 **Audit the installed package, not a local clone.** The local `../sdypy-model`
 checkout is at 0.1.2 and its `acoustic_external` sources are untracked and
@@ -222,20 +222,34 @@ every `frequency` site. `../sdypy-EMA` is faithful (identical output either
 way), but the model discrepancy is why the counts above are taken from the
 installed distributions.
 
-**Coverage caveat:** `sdypy-io`, `sdypy-FRF` and `sdypy-excitation` are
-**unaudited** — no local clone, and they are not covered by the counts above.
-This inventory is therefore known-incomplete.
+All six first-level packages are checked: EMA 0.29.1 → 27, io 0.4.0 → 0,
+FRF 0.1.0 → 0, excitation 0.1.1 → 0, view 0.1.6 → 0, model 0.1.5 → 82.
 
-- [ ] `sdypy-EMA` (28 findings): `nat_freq` → `natural_freq` (public attribute of `Model` —
+**A zero for a shim package is vacuous.** `sdypy-FRF` and `sdypy-excitation`
+contain no code of their own — each is a single `__init__.py` that does
+`from pyFRF import *` / `from pyExSi import *`. `sdypy-io` re-exports `pyuff`,
+`lvm_read` and `pyMRAW` as module aliases beside its own `sfmov`. The names a
+caller actually touches therefore come from the backend distributions, which the
+checker cannot reach: it resolves one portion under `sdypy/`, and the backend is
+not there.
+
+SEP 2 places backend parameter names out of scope (see the `frf_form` row), so
+the backends are not audited here and their names are not pending work. Note
+only that a star-import shim republishes whatever the backend exposes. Whether
+that is acceptable is a shim-curation question for the `public-api` spec, not a
+nomenclature one.
+
+- [ ] `sdypy-EMA` (27 findings): `nat_freq` → `natural_freq` (public attribute of `Model` —
       needs a class-level `__getattr__` shim, not a plain assignment); `nat_xi` and
       `pole_xi` → `damping_ratio` (`Model.select_closest_poles`, `Model.get_poles`);
-      `phi` → `mode_shape` (`Model.get_constants`; excluding `MAC`/`MSF`/`MCF`, whose
-      `phi_X`/`phi_A`/`phi` arguments are a recorded SEP 2 exception);
+      `phi` → `mode_shape` (`Model.get_constants` — a genuine mode shape, but the
+      checker no longer reports a bare `phi`, so this one is `manual`; `MAC`/`MSF`/`MCF`
+      keep `phi_X`/`phi_A`/`phi` as a recorded SEP 2 exception);
       `lower`/`upper`/`f_lower`/`f_upper` → `freq_lower`/`freq_upper` (`Model.__init__`,
       `Model.get_constants`); `frf_type` → `frf_form` (`Model.__init__`,
       `Model.read_uff`, `LSFD`, `LSFD_old`, `LSFD_proportional`);
       `FRF_ind`/`lower_ind`/`upper_ind`/`pole_ind` → the `_idx` spellings.
-- [ ] `sdypy-model` (84 findings): `nat_freq` → `natural_freq` (`Beam.solve`,
+- [ ] `sdypy-model` (82 findings): `nat_freq` → `natural_freq` (`Beam.solve`,
       `Tetrahedron.solve`); `K`/`M` → `stiffness_matrix`/`mass_matrix` (`Beam.assemble`,
       `Shell.construct_global_matrices`, `solve_eigenvalue`, `lump_mass_matrix`);
       `org`/`conec` → `nodes`/`elements` (`Beam`, `Tetrahedron`, `construct_loce`);
@@ -253,13 +267,13 @@ This inventory is therefore known-incomplete.
 - [ ] `sdypy-model`, `acoustic_external` and `mesh` (16 further findings, present in the
       published 0.1.5 but absent from the local 0.1.2 checkout): `frequency` → `freq`
       (`AcousticExternalProblem.__init__`, `Body.__init__`, and three more sites);
-      `phi` → `mode_shape`; `rho` → `density`; `n` → `n_<plural>`; and the bare
+      `rho` → `density`; `n` → `n_<plural>`; and the bare
       uppercase parameters `N`, `R`, `G`, which need maintainer-chosen descriptive
       names as `I`/`A`/`J` above do.
 - [ ] `sdypy-view`: nothing to do — already conformant (`nodes`, `elements`, `mode_shape`,
       `n_frames`). No release needed for this bucket.
-- [ ] `sdypy-io`, `sdypy-FRF`, `sdypy-excitation`: clone and audit, then extend this
-      inventory with whatever the checker reports. Not yet started.
+- [ ] `sdypy-io`, `sdypy-FRF`, `sdypy-excitation`: nothing to do — all three
+      report zero.
 - [ ] Core repo follow-up, after EMA and model ship the rename: move
       `tests/test_interop.py` (six reads of `model.nat_freq` / `ema.nat_freq`) to
       `natural_freq`. Not a blocker — the deprecated alias keeps the suite green meanwhile.

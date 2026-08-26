@@ -85,7 +85,7 @@ def test_non_canonical_parameter_is_reported(tmp_path):
 
 @pytest.mark.parametrize(
     "name, canonical",
-    [("phi", "mode_shape"), ("K", "stiffness_matrix"), ("M", "mass_matrix"),
+    [("phi_X", "mode_shape"), ("K", "stiffness_matrix"), ("M", "mass_matrix"),
      ("conec", "elements"), ("org", "nodes"), ("frequency", "freq"),
      ("lower", "freq_lower"), ("f_upper", "freq_upper"), ("frf_type", "frf_form")],
 )
@@ -253,6 +253,25 @@ def test_every_sep2_spelling_is_enforced():
     assert not unenforced, (
         "SEP 2 requires renames the checker does not enforce: %s" % unenforced
     )
+
+
+def test_bare_phi_is_not_enforced_as_a_mode_shape_spelling():
+    """`phi` is the standard symbol for a phase angle and a velocity potential
+    as well as for a mode shape.
+
+    Enforcing it would tell a maintainer to rename the velocity potential of
+    `model.acoustic_external` to `mode_shape`. SEP 2 still forbids `phi` for a
+    mode shape - that rule is directional, and only the mechanical enforcement
+    of a name the checker cannot classify is dropped.
+    """
+    assert "phi" not in CANONICAL
+    assert CANONICAL["phi_X"] == "mode_shape"
+    assert CANONICAL["phi_A"] == "mode_shape"
+
+
+def test_velocity_potential_named_phi_is_not_reported(tmp_path):
+    src = "def solve_problem(freq):\n    phi = 0.0\n    return phi\n"
+    assert check_clone(write_clone(tmp_path, src, pkg="model")) == []
 
 
 def test_bare_xi_is_not_enforced_as_a_damping_spelling():

@@ -149,7 +149,7 @@ amendment.
      -
    * - Mode shape
      - ``mode_shape``
-     - ``phi``, ``phi_X``, ``phi_A``
+     - ``phi_X``, ``phi_A``
      -
      - Mode shape vector or matrix. Exception: the criterion functions ``MAC``, ``MSF`` and ``MCF`` keep the modal-literature symbols ``phi_X`` (experimental) and ``phi_A`` (analytical) for their arguments. ``phi`` elsewhere is not canonical.
    * - Damping ratio

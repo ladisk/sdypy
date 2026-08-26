@@ -21,12 +21,15 @@ Coverage boundary - what this checker does NOT decide:
     art. SEP 2 makes the canonical table normative and the word-order guideline
     a heuristic that yields to established usage; deciding what is established
     is human judgement, tracked as `manual` in REQUIREMENTS.md.
-  * whether a bare ``xi`` denotes a damping ratio or an element natural
-    (isoparametric) coordinate. SEP 2 makes ``xi``/``eta``/``zeta`` canonical for
+  * whether a bare ``phi`` denotes a mode shape, a phase angle or a velocity
+    potential, and whether a bare ``xi`` denotes a damping ratio or an element
+    natural (isoparametric) coordinate. SEP 2 makes ``xi``/``eta``/``zeta`` canonical for
     element coordinates and ``damping_ratio`` canonical for damping, so the
     reading depends on what the routine computes - which static analysis cannot
     see. Only the unambiguous damping spellings ``nat_xi`` and ``pole_xi`` are
-    enforced here; a bare ``xi`` used for damping is left to the sibling suites.
+    enforced here. A bare ``xi`` used for damping, or a bare ``phi`` used for a
+    mode shape, is left to the sibling suites. SEP 2 still forbids both: the
+    rule is directional, and only its mechanical enforcement is dropped.
   * whether a deprecated alias emits ``DeprecationWarning`` and returns the same
     value as its canonical counterpart. That is runtime behaviour, verified by
     the sibling packages' own test suites.
@@ -59,7 +62,9 @@ CANONICAL = {
     # on sight. Only the unambiguous damping spellings are enforced.
     "nat_xi": "damping_ratio",
     "pole_xi": "damping_ratio",
-    "phi": "mode_shape",
+    # A bare `phi` is absent for the same reason as a bare `xi`: it is the
+    # standard symbol for a phase angle and for a velocity potential as well as
+    # for a mode shape. `phi_X` and `phi_A` are unambiguous and stay.
     "phi_X": "mode_shape",
     "phi_A": "mode_shape",
     "nat_freq": "natural_freq",
