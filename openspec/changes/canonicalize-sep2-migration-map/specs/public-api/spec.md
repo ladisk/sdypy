@@ -26,9 +26,9 @@ amendment to SEP 2 and follows the same review path as any other SEP amendment.
 - **THEN** the assertion is a violation of this requirement, and the fix is to amend SEP 2 or drop the assertion
 
 ### Requirement: Canonical names for element natural coordinates
-The canonical names for the natural (isoparametric) coordinates of a finite
-element SHALL be `xi`, `eta` and `zeta`. These are ratified names of an
-established term of art in finite-element analysis, not divergent spellings.
+The natural (isoparametric) coordinates of a finite element SHALL be named
+`xi`, `eta` and `zeta`. These are ratified names of an established term of art
+in finite-element analysis, not divergent spellings.
 Public functions, methods and attributes of first-level packages that accept or
 expose element natural coordinates MUST use them, and MUST NOT be required to
 rename them to any other spelling.
