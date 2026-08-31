@@ -25,7 +25,7 @@ the facade, packaging, docs, tests, and governance. See
 |---|---|
 | `sdypy/__init__.py` | The umbrella lazy facade (the only real source) |
 | `REQUIREMENTS.md` | Single-source roster: every requirement → its verifying test/checker |
-| `openspec/specs/` | Canonical capability specs (7) — the normative contracts |
+| `openspec/specs/` | Canonical capability specs (8) — the normative contracts |
 | `openspec/changes/` | In-flight OpenSpec changes; `archive/` holds completed ones |
 | `docs/seps/` | SEP governance docs (SEP 1 levels, 2 API, 3 namespace, 5 sep005) |
 | `tools/check_*.py` | Executable conformance checkers (docs, seps, public-api, nomenclature, template) |
