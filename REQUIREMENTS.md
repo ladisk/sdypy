@@ -86,6 +86,11 @@ Spec: `openspec/specs/public-api/spec.md` (SEP 2) · Checker: `tools/check_publi
 | The checker declares its coverage boundary | review of the `check_nomenclature.py` docstring; `pytest::test_every_canonical_name_appears_in_sep2` |
 | A bare `xi` is not statically decidable (damping vs element coordinate) | `manual` — declared in the `check_nomenclature.py` docstring; sibling suites own it |
 | Sibling nomenclature conformance is a pre-release gate | `pytest::test_installed_package_uses_canonical_names` (`pypi_artifacts`) |
+| SEP 2 records its relation to ISO 7626 and every divergence from it | `manual` (docs) — review of the "Relation to ISO 7626" section in `docs/seps/sep-0002.rst` |
+| A name for an uncovered quantity satisfies the guidelines and ISO 7626 | `manual` (SEP 2 prose) — human judgement; not mechanically checkable |
+| The pull-request author declares new public names | `manual` (process) — no tool detects an undeclared name; see [§ Pending D](#d-pr-template-and-checker-invocation-deferred) |
+| Declared names reach the table via a ledger and a triggered amendment | `manual` (process) — a *SEP 2 pending terms* issue, opened on first declaration and closed by the amendment PR; the mirror tests gate the resulting edit |
+| The narrative docs carry the worked procedure | `manual` (docs) — review of `docs/source/dev/nomenclature.rst`; `check_docs.py` |
 
 ### sep005-standard
 Spec: `openspec/specs/sep005-standard/spec.md` (SEP 5) · Scope: **umbrella-local**
@@ -279,3 +284,29 @@ nomenclature one.
       `natural_freq`. Not a blocker — the deprecated alias keeps the suite green meanwhile.
 - [ ] Every rename keeps its alias through all of v1.x; removal is gated at v2.0 by the
       SEP 2 deprecation policy.
+
+### D. PR template and checker invocation (deferred)
+Acceptance: the declaration line exists in a PR template that contributors
+actually see, and a decision is recorded on whether `check_nomenclature.py`
+runs automatically.
+
+Established by the `add-sep2-term-governance` change, which deliberately left
+these out of scope.
+
+- [ ] No PR or issue template exists in the umbrella, in any of the six
+      siblings, or in `sdypy_template_project`. The "new public names introduced
+      by this PR" declaration line belongs in one. Creating it touches the
+      `sibling-package-template` capability (§ *Repository scaffolding*) and all
+      six sibling repos.
+- [ ] `tools/check_nomenclature.py` is never run automatically: the umbrella
+      `docs.yml` excludes it by design, and no sibling CI invokes it. It is run
+      by hand against a clone. Decide whether that stays true.
+- [ ] The *SEP 2 pending terms* issue convention is documented but untested in
+      practice: the first one is opened when a name is actually declared. Watch
+      that it is opened rather than skipped.
+- [ ] Generating the author's declaration from a public-name diff would automate
+      the one step that is currently pure discipline. Revisit once the human
+      path has been used a few times.
+
+**Out of scope, tracked elsewhere.** How the rules defined here propagate to the
+sibling namespace packages is being solved centrally, not in this repo.

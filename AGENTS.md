@@ -103,3 +103,5 @@ track it in `REQUIREMENTS.md` § Pending instead.
 - Normative contracts → `openspec/specs/<capability>/spec.md`
 - Governance & design rationale → `docs/seps/sep-000*.rst`
 - Contribution process, style, CoC → `CONTRIBUTING.rst`, `docs/source/dev/`
+- Naming a new public term → `docs/source/dev/nomenclature.rst` (SEP 2 states
+  the rule; that page carries the procedure and the checker's limits)
