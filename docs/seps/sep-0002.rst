@@ -193,7 +193,7 @@ amendment.
      -
      - Natural (isoparametric) coordinates of a finite element. An established term of art in finite-element analysis, and canonical as written: these are **not** divergent spellings of ``damping_ratio``.
 
-Two entries need a word of explanation.
+Three entries need a word of explanation.
 
 ``EI`` is a scalar bending rigidity, the product of Young's modulus and the
 second moment of area. It is not a stiffness matrix. ``stiffness_matrix`` is
@@ -208,6 +208,11 @@ a damping ratio uses ``damping_ratio`` wherever it appears. A finite-element
 routine keeps ``xi``, ``eta`` and ``zeta``. Only the unambiguous damping
 spellings (``nat_xi``, ``pole_xi``) are in the **Instead of** column. A bare
 ``xi`` cannot be classified without knowledge of what the routine computes.
+
+``frf_type`` is divergent for the FRF *form*, the ratio named by ``frf_form``.
+The same spelling names a different quantity in backend code: the choice between
+``'H1'``, ``'H2'`` and ``'Hv'``. That quantity does not take ``frf_form``, and
+this table records no canonical spelling for it.
 
 .. canonical-table-end
 
