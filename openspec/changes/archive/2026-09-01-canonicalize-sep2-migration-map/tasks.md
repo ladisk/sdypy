@@ -51,4 +51,4 @@
 - [x] 7.1 Run `openspec validate canonicalize-sep2-migration-map --strict` and confirm it passes
 - [x] 7.2 Run the full local gate `pytest` and report which `pypi_artifacts` tests fail and why (they are expected red until Bucket A lands)
 - [x] 7.3 Re-run all three sibling audits and record the new finding counts against the pre-change baseline (view 0, EMA 26, model 70) — done, and extended to the *installed* packages after the clone was found stale: view 0, EMA 28, model 84
-- [ ] 7.4 Open the change for review on GitHub as agreed in the 2026-08-26 meeting; do not push without explicit instruction
+- [x] 7.4 Review round closed in the 2026-09-01 meeting with Janko and Klemen. The PR intended in `ladisk/sdypy` was never opened — the change reached `main` by direct push through a miscommunication — so the review was held in the meeting instead: the ISO 7626 relation was accepted, and the `frf_form` migration and the handling of future nomenclature proposals were agreed as follow-on work
