@@ -73,8 +73,16 @@ spec — propose the change, get the delta specs right, then implement.
 2. **Validate**: `openspec validate <name> --strict` (every change needs at
    least one delta with a `#### Scenario:` block).
 3. **Implement** the tasks; keep `tasks.md` checkboxes current.
-4. **Archive**: `openspec archive <name>` folds the delta into
-   `openspec/specs/` and moves the change to `archive/`.
+4. **Open one PR** on a branch here, carrying the artifacts and the
+   implementation.
+5. **Review** the delta there — the human audit of the contract, with the
+   artifacts in the first commit so they read apart from the code.
+6. **Archive**: `openspec archive <name>` as the final commit once review
+   converges, carrying the `REQUIREMENTS.md` roster update with it.
+7. **Merge.**
+
+Steps 1–3 and 6 engage only for non-trivial work; a typo or a version bump skips
+OpenSpec entirely and is just steps 4, 5 and 7.
 
 The OpenSpec skills/commands live in `.claude/` (`opsx:*` / `openspec-*`). If
 `openspec/` or those commands are missing, run `openspec init` / `openspec
@@ -92,6 +100,8 @@ track it in `REQUIREMENTS.md` § Pending instead.
 - **SEP governance** decides cross-cutting design (`docs/seps/`, per SEP 0/1).
 - **Public API is explicit** — every first-level package curates `__all__`
   (SEP 2). The umbrella exposes exactly the six sub-package names plus `sep005`.
+- **Changes land through PRs.** Review weight scales with the change: a typo
+  merges once CI is green, a contract change gets a real look.
 - **NumPy-style docstrings** unless a file clearly uses another style.
 - Dev-only files (`openspec/`, `.claude/`, `REQUIREMENTS.md`, this file) are
   **not** shipped in the sdist — the `[tool.hatch.build.targets.sdist]`
