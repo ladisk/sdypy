@@ -1,0 +1,164 @@
+==========================================
+SEP 6 — Development cycle and contribution
+==========================================
+
+:Authors: <TODO: author name and e-mail before opening the PR>
+:Status: Draft
+:Type: Process
+:Created: 2026-09-15
+
+
+Abstract
+--------
+
+SEPs 1–5 define what the software is. None defines how a change moves through
+it. This SEP does: where rules live, how they reach the sub-packages, which
+changes must be specified before they are implemented, and who is responsible
+at which point. It states what must be true of a merged change, not how to type
+the commands.
+
+
+Motivation and Scope
+--------------------
+
+- Process is decided case by case. The ``frf_form`` and ``frf_estimator``
+  renames are parked because no agreed procedure exists for one change across
+  two repositories.
+- The umbrella's checkers run in no sub-package's CI. A rule that fails nowhere
+  is a wish.
+- Specifications used to be expensive to write, which is why they were reserved
+  for large changes. When an agent drafts them that cost changes — and changes
+  now arrive faster than they can be reviewed.
+
+In scope: where governance lives, how a change is classified, what a merged
+change carries, what stays a human judgement. Out of scope: nomenclature
+(SEP 2), namespace (SEP 3), roadmap (SEP 4), and any particular tool.
+
+
+Usage and Impact
+----------------
+
+==============  ================================  ==========================
+Lane            Applies when                      Artifacts produced by
+==============  ================================  ==========================
+Trivial         No behaviour or name change       None
+Hand-written    Non-trivial, written by a person  Maintainer, before merge
+Agent-assisted  Non-trivial, AI agent used        Contributor, with the work
+==============  ================================  ==========================
+
+Effort asked of a contributor scales with the means they already have. The
+merged state is identical in all three lanes.
+
+
+Backward compatibility
+----------------------
+
+Process only; no published interface changes. Open pull requests are judged
+under the lane they fall into.
+
+
+Detailed description
+--------------------
+
+Rules
+^^^^^
+
+- Every rule has one home. Other repositories link to it; they never copy it.
+- Cross-cutting rules live in the umbrella; package-local rules in the package.
+- A rule states how it is verified — a checker, a test, or a named human judge.
+  A rule with none of these is deleted.
+- Rules reach sub-packages through checkers in their CI, not through copied text.
+
+Classifying a change
+^^^^^^^^^^^^^^^^^^^^
+
+- A change is trivial if it alters no behaviour and no public name. Trivial
+  changes skip the specification steps, however they were written.
+- Every other change is non-trivial. Agent-assisted: the contributor produces
+  the artifacts and runs the cycle in ``AGENTS.md`` § *Required workflow*.
+  Hand-written: the maintainer produces them before merge.
+- No check can detect agent use. The lane rests on the contributor's
+  declaration, which makes disclosure part of the mechanism.
+
+Merging
+^^^^^^^
+
+- Strictness is a property of the repository at merge time, not a hurdle in
+  front of whoever opens a pull request.
+- A non-trivial change merges only with: a specification delta for every
+  contract it changes; a test or named checker per new requirement; a deprecated
+  alias for every renamed public name; CI green; one human approval.
+- Who wrote the artifacts does not change the bar.
+
+Changes spanning repositories
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- The specification goes where the contract lives; the tasks go where the code
+  lives.
+- The umbrella tracks org-wide status; each sub-package tracks its own work.
+
+AI-assisted contributions
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Permitted, including automatically opened pull requests, under four conditions:
+
+1. Disclosure of tool and model is required, and checked mechanically. An
+   unfilled field fails.
+2. A person is accountable at merge and must be able to defend the code.
+   *(To confirm before ratification: accountability sits at merge, not at
+   submission.)*
+3. The pull-request template is a gate, not advice.
+4. Simultaneously open AI-assisted pull requests per contributor are capped.
+
+SDyPy departs here from projects that require a person to submit generated code.
+Every other rule here constrains the artifact, not its author.
+
+Reserved for human judgement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Not automatable, listed so no one tries: whether a name reads well where the
+canonical table is silent; whether an abstraction is warranted; whether a
+specification describes the problem correctly; ratification of any SEP.
+
+
+Implementation
+--------------
+
+1. Adopt as Draft; reference from ``AGENTS.md``, which stays the operational
+   description.
+2. Package the checkers so a sub-package runs them in one CI line; add that
+   line to each. Until this exists the enforcement rules are unimplemented and
+   this SEP is prose.
+3. Add the pull-request template with the disclosure and lane fields, and the
+   labels for a change awaiting its specification.
+4. Give each sub-package a contributor guide linking here, its own
+   specification directory, and a scoped requirements roster.
+5. Branch protection on every repository; code ownership of ``docs/seps/`` and
+   the umbrella specifications assigned to those who ratify them.
+6. Revisit the Status after three changes have run end to end in two
+   repositories.
+
+Steps 3 and 5 need organisation admin rights and may run in parallel with 2.
+
+
+Discussion
+----------
+
+- Generalisation to the namespace packages:
+  https://github.com/ladisk/sdypy/issues/3
+- The cycle this SEP formalises: https://github.com/ladisk/sdypy/pull/5
+
+
+References and Footnotes
+------------------------
+
+.. [1] Each SEP must either be explicitly labeled as placed in the public domain (see
+   this SEP as an example) or licensed under the `Open Publication License`_.
+
+.. _Open Publication License: https://www.opencontent.org/openpub/
+
+
+Copyright
+---------
+
+This document has been placed in the public domain. [1]_
