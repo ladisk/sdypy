@@ -2,7 +2,7 @@
 SEP 6 — Development cycle and contribution
 ==========================================
 
-:Authors: <TODO: author name and e-mail before opening the PR>
+:Authors: Tibor Barsi Palmic <tibor.barsi@mailbox.org>
 :Status: Draft
 :Type: Process
 :Created: 2026-09-15
