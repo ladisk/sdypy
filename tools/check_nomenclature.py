@@ -33,6 +33,11 @@ Coverage boundary - what this checker does NOT decide:
   * whether a deprecated alias emits ``DeprecationWarning`` and returns the same
     value as its canonical counterpart. That is runtime behaviour, verified by
     the sibling packages' own test suites.
+  * names of re-exported backend objects. SEP 2 binds them (pyFRF's ``FRF``,
+    re-exported as ``sdypy.FRF.FRF``), but this checker audits only the portion
+    under ``sdypy/`` and never the backend. Their renames (``frf_type``,
+    ``type`` -> ``frf_estimator``; ``form`` -> ``frf_form``) are verified by
+    the backend's own tests.
   * names introduced by decorators or generated dynamically. Static analysis
     only sees plain ``def``/``class`` statements; the six first-level packages
     define their public surfaces that way today, but a sibling that changes

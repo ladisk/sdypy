@@ -291,6 +291,36 @@ def test_element_coordinates_are_not_reported(tmp_path):
     assert check_clone(write_clone(tmp_path, src, pkg="model")) == []
 
 
+def test_generic_frf_parameter_names_are_not_enforced():
+    """`type` and `form` diverge from `frf_estimator` and `frf_form` only on
+    pyFRF's `get_FRF`. Enforcing them would report every `type` or `form`
+    parameter in all six packages, so SEP 2 records them in a note instead.
+    """
+    assert "type" not in CANONICAL
+    assert "form" not in CANONICAL
+    assert CANONICAL["frf_type"] == "frf_form"
+
+
+def test_get_frf_with_type_and_form_is_not_reported(tmp_path):
+    src = (
+        "class FRF:\n"
+        "    def get_FRF(self, type=None, form=None):\n"
+        "        return type, form\n"
+    )
+    assert check_clone(write_clone(tmp_path, src, pkg="FRF")) == []
+
+
+def test_frf_estimator_and_its_context_spellings_are_documented_in_sep2():
+    text = SEP2.read_text(encoding="utf-8")
+    table, _, _ = text.partition(".. canonical-table-end")
+    assert "``frf_estimator``" in table
+    for value in ("'H1'", "'H2'", "'Hv'", "'ODS'"):
+        assert value in table
+    note = table.rpartition("need a word of explanation.")[2]
+    for spelling in ("``frf_type``", "``type``", "``form``", "``frf_estimator``"):
+        assert spelling in note
+
+
 def test_ei_is_reported_without_a_canonical_name(tmp_path):
     """`EI` is a scalar bending rigidity, not a stiffness matrix."""
     src = "def matrices_k_e(EI, length):\n    return EI * length\n"
