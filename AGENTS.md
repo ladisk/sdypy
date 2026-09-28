@@ -107,6 +107,21 @@ track it in `REQUIREMENTS.md` § Pending instead.
   **not** shipped in the sdist — the `[tool.hatch.build.targets.sdist]`
   allow-list in `pyproject.toml` is explicit; keep it that way.
 
+## For sibling repositories
+
+Every first-level sibling copies the block below into its own `AGENTS.md`
+verbatim (*Agent instructions link to the hub's org-wide rules*,
+`sibling-package-template` spec); the hub's copy here is the block's only
+home, so edit it only in this file.
+
+<!-- >>> sdypy hub links -->
+- [AGENTS.md](https://github.com/sdypy/sdypy/blob/main/AGENTS.md) — workflow and definition of done
+- [docs/seps/](https://github.com/sdypy/sdypy/tree/main/docs/seps/) — SEP governance docs
+- [docs/source/dev/nomenclature.rst](https://github.com/sdypy/sdypy/blob/main/docs/source/dev/nomenclature.rst) — naming a new public term (SEP 2)
+- [openspec/specs/](https://github.com/sdypy/sdypy/tree/main/openspec/specs/) — canonical capability specs
+- [REQUIREMENTS.md](https://github.com/sdypy/sdypy/blob/main/REQUIREMENTS.md) — requirements roster
+<!-- <<< sdypy hub links -->
+
 ## Authoritative sources (read these, don't guess)
 
 - Requirements & their verification → `REQUIREMENTS.md`
