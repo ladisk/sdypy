@@ -47,6 +47,7 @@ pytest                                # full local run incl. pypi_artifacts gate
 python tools/check_docs.py --path .         # documentation conformance (umbrella)
 python tools/check_seps.py --path .         # SEP metadata conformance (umbrella)
 python -m build                       # build sdist + wheel
+python docs/seps/tools/build_index.py                # generate the SEP index (before the docs build)
 sphinx-build -b html docs/source docs/_build/html   # build docs
 ```
 
