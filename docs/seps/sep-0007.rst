@@ -56,7 +56,7 @@ direction it suggests and, where one exists, the rule that grew from it.
 *Explicit is better than implicit.*
    Prefer a visible public API, stated units and inputs passed as arguments
    over hidden state and silent assumptions. The ``__all__`` rule of SEP 2 and
-   the explicit units of SEP 5 grew from this.
+   the named unit fields of SEP 5 reflect this.
 
 *Readability counts.*
    Prefer names that say what a quantity is, and code that a student of
