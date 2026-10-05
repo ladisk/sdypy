@@ -91,6 +91,10 @@ test-only changes, bug fixes. It skips OpenSpec and is just steps 4, 5 and 7.
 Not trivial: editing a SEP or a spec, or a test change that removes or weakens
 a verifier listed in `REQUIREMENTS.md`.
 
+A change spanning repositories puts its spec where the contract lives (the hub,
+for org-wide contracts) and its tasks where the code lives (each sibling's own
+OpenSpec change).
+
 The OpenSpec skills/commands live in `.claude/` (`opsx:*` / `openspec-*`). If
 `openspec/` or those commands are missing, run `openspec init` / `openspec
 update` first. Operational or governance work with **no honest spec delta**
