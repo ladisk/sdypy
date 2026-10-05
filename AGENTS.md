@@ -129,6 +129,10 @@ A change is ready for review when these checks have *run* and passed —
   its tests and the public names. Correctness of the code rests on CI and on
   the person accountable for the PR; reading it line by line is the reviewer's
   call.
+- **AI-assisted contributions are welcome**, including PRs an agent opens on
+  its own. The PR description says which tool and model were used and for
+  what. Before merge, a named person (the author or the merging maintainer) is
+  accountable for the PR and must be able to explain and defend its code.
 - **NumPy-style docstrings** unless a file clearly uses another style.
 - Dev-only files (`openspec/`, `.claude/`, `REQUIREMENTS.md`, this file) are
   **not** shipped in the sdist — the `[tool.hatch.build.targets.sdist]`
