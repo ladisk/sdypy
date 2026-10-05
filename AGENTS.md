@@ -82,8 +82,11 @@ spec — propose the change, get the delta specs right, then implement.
    converges, carrying the `REQUIREMENTS.md` roster update with it.
 7. **Merge.**
 
-Steps 1–3 and 6 engage only for non-trivial work; a typo or a version bump skips
-OpenSpec entirely and is just steps 4, 5 and 7.
+A change is **trivial** when it adds, changes or removes no spec requirement and
+no public name, however it was written: documentation, typos, version bumps,
+test-only changes, bug fixes. It skips OpenSpec and is just steps 4, 5 and 7.
+Not trivial: editing a SEP or a spec, or a test change that removes or weakens
+a verifier listed in `REQUIREMENTS.md`.
 
 The OpenSpec skills/commands live in `.claude/` (`opsx:*` / `openspec-*`). If
 `openspec/` or those commands are missing, run `openspec init` / `openspec
