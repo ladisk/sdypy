@@ -124,7 +124,11 @@ A change is ready for review when these checks have *run* and passed —
 - **Public API is explicit** — every first-level package curates `__all__`
   (SEP 2). The umbrella exposes exactly the six sub-package names plus `sep005`.
 - **Changes land through PRs.** Review weight scales with the change: a typo
-  merges once CI is green, a contract change gets a real look.
+  merges once CI is green, a contract change gets a real look. For a
+  non-trivial change the human approval covers the contract: the spec delta,
+  its tests and the public names. Correctness of the code rests on CI and on
+  the person accountable for the PR; reading it line by line is the reviewer's
+  call.
 - **NumPy-style docstrings** unless a file clearly uses another style.
 - Dev-only files (`openspec/`, `.claude/`, `REQUIREMENTS.md`, this file) are
   **not** shipped in the sdist — the `[tool.hatch.build.targets.sdist]`
