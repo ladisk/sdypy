@@ -66,8 +66,11 @@ the local pre-release gate and are deselected on GitHub CI.
 
 ## Required workflow: OpenSpec (spec-driven)
 
-Non-trivial changes are **spec-first**. Do not edit behaviour and back-fill a
-spec — propose the change, get the delta specs right, then implement.
+Non-trivial changes are **spec-first**: if you write one, do not edit behaviour
+and back-fill a spec — propose the change, get the delta specs right, then
+implement. A PR that arrives with code but no spec is not rejected: the
+maintainer writes the spec before merge, and review checks it as the contract,
+not as a description of whatever the code does.
 
 1. **Propose** a change under `openspec/changes/<name>/` (`proposal.md`,
    `tasks.md`, and delta specs under `specs/<capability>/spec.md`).
